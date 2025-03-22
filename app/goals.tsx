@@ -204,9 +204,8 @@ export default function GoalsScreen() {
   useEffect(() => {
     const interval = setInterval(() => {
       checkForReminders();
-    }, 60000); // Check every 60 seconds (1 minute)
-  
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    }, 1000); // 🔥 Now checks every 10 seconds
+    return () => clearInterval(interval);
   }, []);
   
   
@@ -511,7 +510,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: typography.sizes.xl,
     color: colors.text.primary,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
     textAlign: 'center',
   },
   modalInput: {
@@ -533,9 +532,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   modalLabel: {
-    fontSize: typography.sizes.sm,
+    fontSize: typography.sizes.md,
     color: colors.text.secondary,
     marginLeft: spacing.xs,
+    marginTop: spacing.xs,
   },
   modalDateText: {
     fontSize: typography.sizes.md,
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   modalButtonText: {
-    fontSize: typography.sizes.md,
+    fontSize: typography.sizes.lg,
     color: colors.text.inverse,
   },
   reminderContainer: {
