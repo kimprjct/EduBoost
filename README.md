@@ -7,8 +7,7 @@ EduBoost is a React Native mobile application designed to help students stay mot
 - **Study Material Storage**
   - Upload PDFs
   - Offline access to all stored materials
-  - Organize materials by type and date
-
+  
 - **Study Streak Tracker**
   - Track daily study sessions
   - View study streaks and progress

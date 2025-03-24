@@ -113,17 +113,28 @@ export default function HomeScreen() {
 
   const loadStudyStreak = async () => {
     try {
-      let streak = await AsyncStorage.getItem('studyStreaks');
-      streak = streak ? JSON.parse(streak) : [];
-      setStudyStreak(streak);
+        let streak = await AsyncStorage.getItem('studyStreaks');
+        streak = streak ? JSON.parse(streak) : [];
+        setStudyStreak(streak);
 
-      const today = new Date().toISOString().split('T')[0];
-      const todayRecord = streak.find(s => s.date === today);
-      setTodayMinutes(todayRecord ? todayRecord.minutes_studied : 0);
+        const today = new Date().toISOString().split('T')[0];
+        const todayRecord = streak.find(s => s.date === today);
+        setTodayMinutes(todayRecord ? todayRecord.minutes_studied : 0);
+
+        // Recalculate the streak
+        const consecutiveDays = getConsecutiveDays(streak);
+        setStudyStreak(streak);
+
+        // If streak should reset, update storage
+        if (consecutiveDays === 0) {
+            await AsyncStorage.setItem('studyStreaks', JSON.stringify([]));
+        }
+
     } catch (error) {
-      console.error('Error loading study streak:', error);
+        console.error('Error loading study streak:', error);
     }
-  };
+};
+
 
   const handleGotIt = async () => {
     Animated.timing(fadeAnim, {
@@ -189,21 +200,21 @@ export default function HomeScreen() {
   };
 
   const getConsecutiveDays = (streak) => {
-    streak.sort((a, b) => new Date(a.date) - new Date(b.date));
-    let consecutiveDays = 0;
-    let maxConsecutiveDays = 0;
+    if (!streak.length) return 0;
 
-    for (let i = 0; i < streak.length; i++) {
-      if (i === 0 || isConsecutive(streak[i].date, streak[i - 1].date)) {
+    streak.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    let consecutiveDays = 1; 
+    for (let i = streak.length - 1; i > 0; i--) {
+        if (!isConsecutive(streak[i].date, streak[i - 1].date)) {
+            return 0; // Reset streak if a gap is found
+        }
         consecutiveDays++;
-        maxConsecutiveDays = Math.max(maxConsecutiveDays, consecutiveDays);
-      } else {
-        consecutiveDays = 1;
-      }
     }
 
-    return maxConsecutiveDays;
-  };
+    return consecutiveDays;
+};
+
 
   const isConsecutive = (date1, date2) => {
     const d1 = new Date(date1);
